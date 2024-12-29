@@ -40,7 +40,7 @@ export class QuizzComponent {
   }
 
   questaoEscolhida(value:string){
-    this.questoes.push(value)
+    this.respostas.push(value)
     this.nextStep()
 
   }
@@ -51,11 +51,26 @@ export class QuizzComponent {
     if(this.questaoMaxIndex > this.questaoIndex){
         this.questaoSelecionada = this.questoes[this.questaoIndex]
     }else{
-      
+      const finalAnswer:string = await this.checkResult(this.respostas)
       this.finished = true
-      
+      this.respostaSelecionada = quizz_questions.results[finalAnswer as keyof typeof quizz_questions.results ]
     }
   }
 
+  async checkResult(respostas:string[]){
+
+    const result = respostas.reduce((previous, current, i, arr)=>{
+        if(
+          arr.filter(item => item === previous).length >
+          arr.filter(item => item === current).length
+        ){
+          return previous
+        }else{
+          return current
+        }
+    })
+
+    return result
+  }
 
 }
